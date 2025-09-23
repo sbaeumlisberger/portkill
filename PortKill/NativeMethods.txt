@@ -1,0 +1,2 @@
+﻿GetExtendedTcpTable
+MIB_TCPROW_OWNER_PID
