@@ -13,12 +13,16 @@
         <MicaBackdrop />
     </Window.SystemBackdrop>
 
-    <StackPanel Padding="16" Spacing="16" Loaded="StackPanel_Loaded">
-        <TextBox x:Name="portNumberTextBox" PlaceholderText="Enter Port"/>
-        <Grid>
-            <Button Content="Show Process" Click="ShowProcessButton_Click"/>
-            <Button HorizontalAlignment="Right" Style="{ThemeResource AccentButtonStyle}" Content="Kill Process" Click="KillButton_Click"/>
-        </Grid>
-        <TextBlock x:Name="infoTextBlock" TextWrapping="Wrap"/>
+    <StackPanel Loaded="StackPanel_Loaded">
+        <TextBlock Text="PortKill" FontSize="12" Margin="12,6,12,6"/>
+     
+        <StackPanel Padding="12" Spacing="12" >      
+            <TextBox x:Name="portNumberTextBox" PlaceholderText="Enter Port"/>
+            <Grid>
+                <Button Content="Show Process" Click="ShowProcessButton_Click"/>
+                <Button HorizontalAlignment="Right" Style="{ThemeResource AccentButtonStyle}" Content="Kill Process" Click="KillButton_Click"/>
+            </Grid>
+            <TextBlock Margin="2,0,0,0" x:Name="infoTextBlock" TextWrapping="Wrap"/>
+        </StackPanel>
     </StackPanel>
 </Window>
