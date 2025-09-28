@@ -2,3 +2,6 @@
 MIB_TCPROW_OWNER_PID
 GetExtendedUdpTable
 MIB_UDPROW_OWNER_PID
+CoCreateInstance
+IShellLinkW
+IPersistFile
