@@ -2,4 +2,4 @@ Simple tool for killing processes based on the port they are using.
 
 Download: https://github.com/sbaeumlisberger/portkill/releases/latest/download/PortKill.exe
 
-<img width="400" src="https://github.com/user-attachments/assets/2b9acc97-254e-4453-b754-acaad110f432" />
+<img width="400" alt="screenshot" src="https://github.com/user-attachments/assets/4f7e125f-4f2d-4e50-b34a-1259e23748d2" />
