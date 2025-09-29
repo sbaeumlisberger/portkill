@@ -6,7 +6,6 @@ using Windows.Win32;
 using Windows.Win32.UI.Shell;
 using Windows.Win32.System.Com;
 using WinUIEx;
-using Windows.UI.Popups;
 using System.Threading.Tasks;
 using Microsoft.UI;
 
@@ -25,34 +24,42 @@ public sealed partial class MainWindow : Window
 
         InitializeComponent();
 
-        CreateStartMenuEntry();
+        Task.Run(CreateOrUpdateStartMenuEntry);
     }
 
-    private unsafe void CreateStartMenuEntry()
+    private unsafe void CreateOrUpdateStartMenuEntry()
     {
         try
         {
-            var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.StartMenu), "Programs", "PortKill.lnk");
-            if (!File.Exists(filePath))
+            var shortcutPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.StartMenu), "Programs", "PortKill.lnk");
+
+            var exePath = Environment.ProcessPath!;
+
+            Guid CLSID_ShellLink = new("00021401-0000-0000-C000-000000000046");
+            PInvoke.CoCreateInstance(CLSID_ShellLink, null, CLSCTX.CLSCTX_INPROC_SERVER, out IShellLinkW* shellLink).ThrowOnFailure();
+
+            Guid IID_IPersistFile = new("0000010B-0000-0000-C000-000000000046");
+            shellLink->QueryInterface(IID_IPersistFile, out void* _persistFile).ThrowOnFailure();
+            var persistFile = (IPersistFile*)_persistFile;
+
+            if (File.Exists(shortcutPath))
             {
-                var exePath = Environment.ProcessPath!;
+                persistFile->Load(shortcutPath, STGM.STGM_READWRITE);
+            }
 
-                Guid CLSID_ShellLink = new("00021401-0000-0000-C000-000000000046");
-                PInvoke.CoCreateInstance(CLSID_ShellLink, null, CLSCTX.CLSCTX_INPROC_SERVER, out IShellLinkW* shellLink).ThrowOnFailure();
-
+            string currentExePath = shellLink->GetPath();
+            if (currentExePath.ToString() != exePath)
+            {
                 shellLink->SetPath(exePath);
                 shellLink->SetDescription("PortKill");
                 shellLink->SetWorkingDirectory(Path.GetDirectoryName(exePath)!);
                 shellLink->SetIconLocation(exePath, 0);
 
-                Guid IID_IPersistFile = new("0000010B-0000-0000-C000-000000000046");
-                shellLink->QueryInterface(IID_IPersistFile, out void* persistFilePtr).ThrowOnFailure();
-                var persistFile = (IPersistFile*)persistFilePtr;
-                persistFile->Save(filePath, true);
-
-                persistFile->Release();
-                shellLink->Release();
+                persistFile->Save(shortcutPath, true);
             }
+
+            persistFile->Release();
+            shellLink->Release();
         }
         catch (Exception e)
         {
